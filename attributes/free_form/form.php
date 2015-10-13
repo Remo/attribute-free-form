@@ -1,4 +1,5 @@
 <?php
+defined('C5_EXECUTE') or die('Access Denied.');
 
 // replace attribute values
 $formCode = preg_replace_callback(

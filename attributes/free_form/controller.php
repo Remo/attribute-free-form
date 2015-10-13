@@ -21,11 +21,28 @@ class Controller extends AttributeTypeController
         return $value;
     }
 
-    public function getValue()
+    public function getFormValues()
     {
         $db = Database::connection();
         $rawData = $db->GetOne('SELECT data FROM atFreeForm WHERE avID = ?', [$this->getAttributeValueID()]);
         return json_decode($rawData, true);
+    }
+
+    public function getValue()
+    {
+        $typeValues = $this->getTypeValue();
+        $values = $this->getFormValues();
+
+        // replace attribute values
+        $output = preg_replace_callback(
+            '/\[ATTRIBUTE_VALUE\(([a-zA-Z]+)\)\]/',
+            function ($matches) use ($values) {
+                return isset($values[$matches[1]]) ? $values[$matches[1]] : '';
+            },
+            $typeValues['viewCode']
+        );
+
+        return $output;
     }
 
     /**
@@ -35,10 +52,10 @@ class Controller extends AttributeTypeController
     {
         $this->requireAsset('ace');
 
-        $values = $this->getTypeValue();
+        $typeValues = $this->getTypeValue();
 
-        $this->set('viewCode', $values['viewCode']);
-        $this->set('formCode', $values['formCode']);
+        $this->set('viewCode', $typeValues['viewCode']);
+        $this->set('formCode', $typeValues['formCode']);
     }
 
     /**
@@ -67,7 +84,7 @@ class Controller extends AttributeTypeController
         $this->set('viewCode', $typeValues['viewCode']);
         $this->set('formCode', $typeValues['formCode']);
 
-        $this->set('values', $this->getValue());
+        $this->set('values', $this->getFormValues());
     }
 
     /**
@@ -110,15 +127,15 @@ class Controller extends AttributeTypeController
         $db = Database::connection();
         $arr = $this->attributeKey->getAttributeValueIDList();
         foreach ($arr as $id) {
-            $db->Execute('DELETE FROM aFreeForm WHERE avID = ?', [$id]);
+            $db->Execute('DELETE FROM atFreeForm WHERE avID = ?', [$id]);
         }
-        $db->Execute('delete from aFreeFormSettings where akID = ?', array($this->attributeKey->getAttributeKeyID()));
+        $db->Execute('delete from atFreeFormSettings where akID = ?', array($this->attributeKey->getAttributeKeyID()));
     }
 
     public function deleteValue()
     {
         $db = Database::connection();
-        $db->Execute('DELETE FROM aFreeForm WHERE avID = ?', [$this->getAttributeValueID()]);
+        $db->Execute('DELETE FROM atFreeForm WHERE avID = ?', [$this->getAttributeValueID()]);
     }
 
 }
