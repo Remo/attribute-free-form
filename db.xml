@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+    <table name="atFreeFormSettings">
+        <field name="akID" type="I">
+            <key/>
+            <default value="0"/>
+            <unsigned/>
+        </field>
+        <field name="formCode" type="X2"></field>
+        <field name="viewCode" type="X2"></field>
+    </table>
+    <table name="atFreeForm">
+        <field name="avID" type="I">
+            <key/>
+            <default value="0"/>
+            <unsigned/>
+        </field>
+        <field name="data" type="X2"></field>
+    </table>
+</schema>
