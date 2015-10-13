@@ -10,7 +10,7 @@ class Controller extends AttributeTypeController
 {
     public $helpers = ['form'];
 
-    public function getValue()
+    public function getTypeValue()
     {
         $db = Database::connection();
         $ak = $this->getAttributeKey();
@@ -21,6 +21,13 @@ class Controller extends AttributeTypeController
         return $value;
     }
 
+    public function getValue()
+    {
+        $db = Database::connection();
+        $rawData = $db->GetOne('SELECT data FROM atFreeForm WHERE avID = ?', [$this->getAttributeValueID()]);
+        return json_decode($rawData, true);
+    }
+
     /**
      * Shows the attribute configuration form
      */
@@ -28,7 +35,7 @@ class Controller extends AttributeTypeController
     {
         $this->requireAsset('ace');
 
-        $values = $this->getValue();
+        $values = $this->getTypeValue();
 
         $this->set('viewCode', $values['viewCode']);
         $this->set('formCode', $values['formCode']);
@@ -55,10 +62,12 @@ class Controller extends AttributeTypeController
      */
     public function form()
     {
-        $values = $this->getValue();
+        $typeValues = $this->getTypeValue();
 
-        $this->set('viewCode', $values['viewCode']);
-        $this->set('formCode', $values['formCode']);
+        $this->set('viewCode', $typeValues['viewCode']);
+        $this->set('formCode', $typeValues['formCode']);
+
+        $this->set('values', $this->getValue());
     }
 
     /**
@@ -75,7 +84,17 @@ class Controller extends AttributeTypeController
      */
     public function saveForm($data)
     {
+        $db = Database::connection();
 
+        $db->Replace(
+            'atFreeForm',
+            [
+                'avID' => $this->getAttributeValueID(),
+                'data' => json_encode($data),
+            ],
+            'avID',
+            true
+        );
     }
 
     /**
