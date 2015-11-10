@@ -58,3 +58,22 @@ view:
     <strong>Address</strong>[ATTRIBUTE_VALUE(Address)] ([ATTRIBUTE_VALUE(Lat)] / [ATTRIBUTE_VALUE(Long)])
 </div>
 ```
+
+Example 3 - Access fields programmatically
+------------------------------------------
+
+Assuming you've got the form in place from the first example using an attribute handle of `test_attribute`.
+If you want to work with the attribute fields from a custom theme or another concrete5 method, you can use the
+following approach.
+
+```php
+// get the page we want to work with
+$p = \Page::getByID(1);
+
+// show attribute view
+echo $p->getAttribute('test_attribute');
+
+// get value of our attribute field called "Name"
+$values = $p->getAttribute('test_attribute', 'variables');
+echo $values['Name'];
+```
