@@ -21,7 +21,7 @@ class Controller extends AttributeTypeController
         return $value;
     }
 
-    public function getFormValues()
+    public function getVariablesValue()
     {
         $db = Database::connection();
         $rawData = $db->GetOne('SELECT data FROM atFreeForm WHERE avID = ?', [$this->getAttributeValueID()]);
@@ -31,7 +31,7 @@ class Controller extends AttributeTypeController
     public function getValue()
     {
         $typeValues = $this->getTypeValue();
-        $values = $this->getFormValues();
+        $values = $this->getVariablesValue();
 
         // replace attribute values
         $output = preg_replace_callback(
@@ -84,7 +84,7 @@ class Controller extends AttributeTypeController
         $this->set('viewCode', $typeValues['viewCode']);
         $this->set('formCode', $typeValues['formCode']);
 
-        $this->set('values', $this->getFormValues());
+        $this->set('values', $this->getVariablesValue());
     }
 
     /**
