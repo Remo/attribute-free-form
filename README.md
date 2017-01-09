@@ -77,3 +77,16 @@ echo $p->getAttribute('test_attribute');
 $values = $p->getAttribute('test_attribute', 'variables');
 echo $values['Name'];
 ```
+
+Example 4 - Save fields programmatically
+----------------------------------------
+
+If you want to write the values of this attribute you can simply call the `setAttribute` method with an array as its parameter.
+
+```php
+// get the page we want to work with
+$p = \Page::getByID(1);
+
+// show attribute view
+$p->setAttribute('test_attribute', ['Name' => 'Remo']);
+```

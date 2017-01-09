@@ -21,6 +21,10 @@ class Controller extends AttributeTypeController
         return $value;
     }
 
+    /**
+     * Returns an array containing all dynamic variables for the attribute
+     * @return array
+     */
     public function getVariablesValue()
     {
         $db = Database::connection();
@@ -112,6 +116,15 @@ class Controller extends AttributeTypeController
             'avID',
             true
         );
+    }
+
+    /**
+     * Called when saving an attribute programmatically through setAttribute.
+     * @param $data array
+     */
+    public function saveValue($data)
+    {
+        $this->saveForm($data);
     }
 
     /**
